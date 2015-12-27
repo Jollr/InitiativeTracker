@@ -60,10 +60,31 @@ var StaticFileMatcher = function() {
 
 		console.log('static file: ' + matched);
 
-		if (!matched) {
+		if (matched) {
 			return new MatchedResult(function(response) {
-				response.writeHead(200, matched.contentType);
+				response.writeHead(200, {contentType: matched.contentType});
 				response.end(readFile(request.url));
+			});
+		} else {
+			return new NoMatchResult();
+		}
+	};
+};
+
+var InitiativeMatcher = function () {
+	var matchUrl = '/initiative/';
+
+	this.MatchRequest = function(request) {
+		if (!request.url.startsWith(matchUrl)) {
+			return new NoMatchResult();
+		}
+
+		var subUrl = request.url.replace(matchUrl, '');
+
+		if (subUrl == 'order') {
+			return new MatchedResult(function(response) {
+				response.writeHead(200, {contentType: 'text/html'});
+				response.end(initiativeContext.Order());
 			});
 		} else {
 			return new NoMatchResult();
@@ -73,7 +94,8 @@ var StaticFileMatcher = function() {
 
 var matchers = immutable.List.of(
 	new StaticFileMatcher(),
-	new RedirectMatcher()
+	new RedirectMatcher(),
+	new InitiativeMatcher()
 );
 
 var processRequest = function(request, response) {

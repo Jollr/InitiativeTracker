@@ -20,3 +20,11 @@ exports.InitiativeRolledEvent = function(name, initiativeRoll) {
 	this.eventType = "InitiativeRolled";
 	this.InitiativeRolle = initiativeRoll;
 };
+
+exports.Order = function() {
+	var order = '<ul>'
+	order += '<li>Kras - 14</li>';
+	order += '<li>Wanda - 1</li>';
+	order += '</ul>';
+	return order;
+};
