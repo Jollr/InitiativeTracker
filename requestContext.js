@@ -8,6 +8,11 @@ var stringContains = function(str, substring) {
 	return str.indexOf(substring) > -1;
 };
 
+var redirect = function(response, target) {
+	response.writeHead(302, { Location: target} );
+	response.end();
+};
+
 var MatchedResult = function(execute) {
 	this.Matched = true;
 	this.Execute = execute;
@@ -29,9 +34,10 @@ var RedirectMatcher = function() {
 			.first();
 
 		if (matched) {
+			console.log('redirect: ' + matched);
+
 			return new MatchedResult(function(response) {
-				response.writeHead(302, { Location: matched.to} );
-				response.end();
+				redirect(response, matched.to);
 			});
 		} else {
 			return new NoMatchResult();
@@ -58,9 +64,9 @@ var StaticFileMatcher = function() {
 			.filter(function(type) { return stringContains(request.url, type.extension); })
 			.first();
 
-		console.log('static file: ' + matched);
-
 		if (matched) {
+			console.log('static file: ' + matched);
+
 			return new MatchedResult(function(response) {
 				response.writeHead(200, {contentType: matched.contentType});
 				response.end(readFile(request.url));
@@ -86,7 +92,16 @@ var InitiativeMatcher = function () {
 				response.writeHead(200, {contentType: 'text/html'});
 				response.end(initiativeContext.Order());
 			});
-		} else {
+		} 
+		else if (request.method == 'POST' && subUrl == 'add') {
+			var addedRoll = new initiativeContext.InitiativeRolledEvent('Kras', 14);
+			initiativeContext.AddEvent(addedRoll);
+
+			return new MatchedResult(function(response) {
+				redirect(response, '/');
+			});
+		} 
+		else {
 			return new NoMatchResult();
 		}
 	};

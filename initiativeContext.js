@@ -1,30 +1,40 @@
 var immutable = require('immutable');
 
-var state = function() {
+var EventStore = function () {
+	var events = new immutable.List();
 
-	initiativeOrder = [];
+	this.Add = function(event) {
+		events = events.push(event);
+		console.log(event);
+	};
 
-	this.Apply = function(event) {
-		if (event.eventType == "CombatStarted") {
+	this.GetOrder = function() {
+		var state = new immutable.List();
+		events.forEach(function(event) {state = event.Apply(state);});
+		var result = state
+			.map(function(x) {return '<li>' + x.charName + ' - ' + x.roll + '</li>'; })
+			.reduce(function(x1, x2) {return x1 + x2;});
 
-		} else if (event.eventType == "InitiativeRolled") {
-		}
+		return '<ul>' + result + '</ul>';
 	};
 };
 
-exports.CombatStartedEvent = function() {
-	this.eventType = "CombatStarted";
-};
+var eventStore = new EventStore();
 
-exports.InitiativeRolledEvent = function(name, initiativeRoll) {
-	this.eventType = "InitiativeRolled";
-	this.InitiativeRolle = initiativeRoll;
+exports.InitiativeRolledEvent = function(charName, roll) {
+	var charName = charName;
+	var roll = roll;
+
+	this.Apply = function(state) {
+		console.log('apply');
+		return state.push({charName: charName, roll: roll});
+	};
 };
 
 exports.Order = function() {
-	var order = '<ul>'
-	order += '<li>Kras - 14</li>';
-	order += '<li>Wanda - 1</li>';
-	order += '</ul>';
-	return order;
+	return eventStore.GetOrder();
+};
+
+exports.AddEvent = function(event) {
+	eventStore.Add(event);
 };
