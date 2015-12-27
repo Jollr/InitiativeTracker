@@ -94,7 +94,7 @@ var InitiativeMatcher = function () {
 			});
 		} 
 		else if (request.method == 'POST' && subUrl == 'add') {
-			var addedRoll = new initiativeContext.InitiativeRolledEvent('Kras', 14);
+			var addedRoll = new initiativeContext.InitiativeRolledEvent(request.postData.characterName, request.postData.initiativeRoll);
 			initiativeContext.AddEvent(addedRoll);
 
 			return new MatchedResult(function(response) {
@@ -127,10 +127,36 @@ var processRequest = function(request, response) {
 	}
 };
 
+var parsePostData = function(postData) {
+	var result = {};
+	//characterName=sadf&initiativeRoll=sadf
+	immutable
+		.fromJS(postData.split('&'))
+		.forEach(function(kvp) {
+			var parts = kvp.split('=');
+			result[parts[0]] = parts[1];
+		});
+
+	return result;
+};
+
 exports.processRequest = function(request, response) {
 	try {
 		console.log('request for ' + request.url);
-		processRequest(request, response);
+
+		if (request.method == 'POST') {
+			var gatheredData = '';
+			request.on('data', function(chunk) {
+				gatheredData += chunk.toString();
+			});
+
+			request.on('end', function() {
+				request.postData = parsePostData(gatheredData);
+				processRequest(request, response);
+			});
+		} else {
+			processRequest(request, response);
+		}
 	} catch(error) {
 		console.log(error);
 		response.writeHead(500, {'Content-Type': 'text/plain'});
