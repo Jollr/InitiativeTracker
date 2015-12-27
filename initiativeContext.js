@@ -1,3 +1,5 @@
+var immutable = require('immutable');
+
 var state = function() {
 
 	initiativeOrder = [];
