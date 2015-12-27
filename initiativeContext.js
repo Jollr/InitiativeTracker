@@ -26,8 +26,13 @@ exports.InitiativeRolledEvent = function(charName, roll) {
 	var roll = roll;
 
 	this.Apply = function(state) {
-		console.log('apply');
 		return state.push({charName: charName, roll: roll});
+	};
+};
+
+exports.CombatStartedEvent = function() {
+	this.Apply = function(state) {
+		return state.sortBy(function (elem) { return elem.roll; }).reverse();
 	};
 };
 

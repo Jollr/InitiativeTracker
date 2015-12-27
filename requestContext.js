@@ -93,10 +93,18 @@ var InitiativeMatcher = function () {
 				response.end(initiativeContext.Order());
 			});
 		} 
-		else if (request.method == 'POST' && subUrl == 'add') {
-			var addedRoll = new initiativeContext.InitiativeRolledEvent(request.postData.characterName, request.postData.initiativeRoll);
-			initiativeContext.AddEvent(addedRoll);
-
+		else if (request.method == 'POST') {
+			if (subUrl == 'add') {
+				var addedRoll = new initiativeContext.InitiativeRolledEvent(request.postData.characterName, request.postData.initiativeRoll);
+				initiativeContext.AddEvent(addedRoll);
+			}
+			else if (subUrl == 'startCombat') {
+				initiativeContext.AddEvent(new initiativeContext.CombatStartedEvent());
+			} 
+			else {
+				return new NoMatchResult();
+			}
+			
 			return new MatchedResult(function(response) {
 				redirect(response, '/');
 			});
@@ -129,7 +137,7 @@ var processRequest = function(request, response) {
 
 var parsePostData = function(postData) {
 	var result = {};
-	//characterName=sadf&initiativeRoll=sadf
+
 	immutable
 		.fromJS(postData.split('&'))
 		.forEach(function(kvp) {

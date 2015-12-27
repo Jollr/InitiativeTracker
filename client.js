@@ -13,6 +13,8 @@ var InitiativeUpdater = function () {
 	this.Start = function() {
 		window.setInterval(update, 1000);
 	};
+
+	update();
 };
 
 $(function() { 
