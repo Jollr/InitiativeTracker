@@ -100,7 +100,9 @@ var InitiativeMatcher = function () {
 			}
 			else if (subUrl == 'startCombat') {
 				initiativeContext.AddEvent(new initiativeContext.CombatStartedEvent());
-			} 
+			} else if (subUrl == 'undo') {
+				initiativeContext.Undo();
+			}
 			else {
 				return new NoMatchResult();
 			}
@@ -135,7 +137,7 @@ var processRequest = function(request, response) {
 	}
 };
 
-var parsePostData = function(postData) {
+var parsePostData = function(postData) { // todo move to server.js
 	var result = {};
 
 	immutable

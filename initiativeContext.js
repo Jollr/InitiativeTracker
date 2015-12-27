@@ -5,7 +5,10 @@ var EventStore = function () {
 
 	this.Add = function(event) {
 		events = events.push(event);
-		console.log(event);
+	};
+
+	this.Pop = function() {
+		events = events.pop();
 	};
 
 	this.GetOrder = function() {
@@ -42,4 +45,8 @@ exports.Order = function() {
 
 exports.AddEvent = function(event) {
 	eventStore.Add(event);
+};
+
+exports.Undo = function() {
+	eventStore.Pop();
 };
