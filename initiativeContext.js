@@ -12,6 +12,10 @@ var EventStore = function () {
 	};
 
 	this.GetOrder = function() {
+		if (!events.first()) {
+			return '<ul></ul>';
+		}
+
 		var state = new immutable.List();
 		events.forEach(function(event) {state = event.Apply(state);});
 		var result = state
