@@ -78,6 +78,7 @@ var StaticFileMatcher = function() {
 };
 
 var InitiativeMatcher = function () {
+	var postRedirectGet = function(response) { redirect(response, '/'); };
 	var matchUrl = '/initiative/';
 
 	this.MatchRequest = function(request) {
@@ -86,32 +87,49 @@ var InitiativeMatcher = function () {
 		}
 
 		var subUrl = request.url.replace(matchUrl, '');
+		var subMatchers = immutable.List.of(
+			{	
+				url: 'order', 
+				method: 'GET', 
+				result: function(response) {
+					response.writeHead(200, {contentType: 'text/html'});
+					response.end(initiativeContext.Order());
+				}
+			}, 
+			{
+				url: 'add', 
+				method: 'POST', 
+				result: function(response) {
+					var addedRoll = new initiativeContext.InitiativeRolledEvent(request.postData.characterName, request.postData.initiativeRoll);
+					initiativeContext.AddEvent(addedRoll);
+					postRedirectGet(response);
+				}
+			},
+			{
+				url: 'startCombat',
+				method: 'POST',
+				result: function(response) {
+					initiativeContext.AddEvent(new initiativeContext.CombatStartedEvent());
+					postRedirectGet(response);
+				}
+			},
+			{
+				url: 'undo',
+				method: 'POST',
+				result: function(response) {
+					initiativeContext.Undo();
+					postRedirectGet(response);
+				}
+			}
+		);
 
-		if (subUrl == 'order') {
-			return new MatchedResult(function(response) {
-				response.writeHead(200, {contentType: 'text/html'});
-				response.end(initiativeContext.Order());
-			});
-		} 
-		else if (request.method == 'POST') {
-			if (subUrl == 'add') {
-				var addedRoll = new initiativeContext.InitiativeRolledEvent(request.postData.characterName, request.postData.initiativeRoll);
-				initiativeContext.AddEvent(addedRoll);
-			}
-			else if (subUrl == 'startCombat') {
-				initiativeContext.AddEvent(new initiativeContext.CombatStartedEvent());
-			} else if (subUrl == 'undo') {
-				initiativeContext.Undo();
-			}
-			else {
-				return new NoMatchResult();
-			}
-			
-			return new MatchedResult(function(response) {
-				redirect(response, '/');
-			});
-		} 
-		else {
+		var matcher = subMatchers
+			.filter(function(candidate) { return candidate.url == subUrl && candidate.method == request.method; })
+			.first();
+
+		if (matcher) {
+			return new MatchedResult(matcher.result);
+		} else {
 			return new NoMatchResult();
 		}
 	};
