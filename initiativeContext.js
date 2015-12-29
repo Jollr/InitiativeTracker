@@ -39,6 +39,13 @@ exports.CombatStartedEvent = function() {
 	};
 };
 
+exports.EndOfTurnEvent = function () {
+	this.Apply = function(state) {
+		var first = state.first();
+		return state.shift().push(first);
+	};
+};
+
 exports.Order = function() {
 	return eventStore.GetOrder();
 };

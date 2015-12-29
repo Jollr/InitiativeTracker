@@ -120,6 +120,14 @@ var InitiativeMatcher = function () {
 					initiativeContext.Undo();
 					postRedirectGet(response);
 				}
+			},
+			{
+				url: 'next',
+				method: 'POST',
+				result: function(response) {
+					initiativeContext.AddEvent(new initiativeContext.EndOfTurnEvent());
+					postRedirectGet(response);
+				}
 			}
 		);
 
@@ -141,7 +149,7 @@ var matchers = immutable.List.of(
 	new InitiativeMatcher()
 );
 
-var processRequest = function(request, response) {
+exports.processRequest = function(request, response) {
 	var handler = matchers
 					.map(function(matcher) { return matcher.MatchRequest(request); } )
 					.filter(function(matchResult) { return matchResult.Matched; })
@@ -152,42 +160,5 @@ var processRequest = function(request, response) {
 		handler.Execute(response);
 	} else {
 		throw 'no matcher found for ' + request.url;
-	}
-};
-
-var parsePostData = function(postData) { // todo move to server.js
-	var result = {};
-
-	immutable
-		.fromJS(postData.split('&'))
-		.forEach(function(kvp) {
-			var parts = kvp.split('=');
-			result[parts[0]] = parts[1];
-		});
-
-	return result;
-};
-
-exports.processRequest = function(request, response) {
-	try {
-		console.log('request for ' + request.url);
-
-		if (request.method == 'POST') {
-			var gatheredData = '';
-			request.on('data', function(chunk) {
-				gatheredData += chunk.toString();
-			});
-
-			request.on('end', function() {
-				request.postData = parsePostData(gatheredData);
-				processRequest(request, response);
-			});
-		} else {
-			processRequest(request, response);
-		}
-	} catch(error) {
-		console.log(error);
-		response.writeHead(500, {'Content-Type': 'text/plain'});
-		response.end(error);
 	}
 };
