@@ -44,6 +44,16 @@ var subMatchers = immutable.List.of(
 		}
 	},
 	{
+		url: 'endCombat',
+		method: 'POST',
+		result: function(request, response) {
+			return function(response) {
+				initiativeContext.AddEvent(new initiativeContext.CombatEndedEvent());
+				postRedirectGet(response);
+			};
+		}
+	},
+	{
 		url: 'undo',
 		method: 'POST',
 		result: function(request, response) {

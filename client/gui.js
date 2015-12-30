@@ -18,6 +18,7 @@ var Gui = function(dispatcher) {
 	};
 	
 	var parseRow = function(row) {
+		if (row == '') return undefined;
 		var result = {};
 
 		Immutable
@@ -28,6 +29,8 @@ var Gui = function(dispatcher) {
 	};
 
 	var genHtml = function(initiativeRoll, updateContext) {
+		if (!initiativeRoll) return '';
+		
 		var className = 'label label-default';
 
 		if (updateContext.isFirst) {

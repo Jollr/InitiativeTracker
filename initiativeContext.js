@@ -12,16 +12,16 @@ var EventStore = function () {
 	};
 
 	this.GetOrder = function() {
-		if (!events.first()) {
+		var state = new immutable.List();
+		events.forEach(function(event) {state = event.Apply(state);});
+
+		if (!state.first()) {
 			return '[]';
 		}
 
-		var state = new immutable.List();
-		events.forEach(function(event) {state = event.Apply(state);});
 		var result = state
-			.map(function(x) {return '{ name: ' + x.charName + ', roll: ' + x.roll + '},'; })
-			.reduce(function(x1, x2) {return x1 + x2;})
-			.slice(0, -1);
+			.map(function(x) {return '{ name: ' + x.charName + ', roll: ' + x.roll + '}'; })
+			.reduce(function(x1, x2) {return x1 + ',' + x2;});
 
 		return '[' + result + ']';
 	};
@@ -41,6 +41,12 @@ exports.InitiativeRolledEvent = function(charName, roll) {
 exports.CombatStartedEvent = function() {
 	this.Apply = function(state) {
 		return state.sortBy(function (elem) { return elem.roll; }).reverse();
+	};
+};
+
+exports.CombatEndedEvent = function() {
+	this.Apply = function(state) {
+		return new immutable.List();
 	};
 };
 
