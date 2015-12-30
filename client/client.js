@@ -1,9 +1,8 @@
-var InitiativeUpdater = function () {
+var InitiativeUpdater = function (dispatcher) {
 	var updateUrl = '/initiative/order';
 
 	var processUpdate = function(data) { 
-		$('#initiativeOrder').html(data);
-		console.log(data);
+		dispatcher.Publish('initiativeOrderUpdated', data);
 	};
 
 	var update = function() {
@@ -18,10 +17,7 @@ var InitiativeUpdater = function () {
 };
 
 $(function() { 
-	var config = new Config();
-	if (!config.IsAdmin()) {
-		$('#adminForms').hide();
-	}
-
-	new InitiativeUpdater().Start();
+	var dispatcher = new Dispatcher();
+	var gui = new Gui(dispatcher);
+	new InitiativeUpdater(dispatcher).Start();
 });

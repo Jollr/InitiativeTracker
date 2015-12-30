@@ -19,7 +19,6 @@ exports.processRequest = function(request, response) {
 					.first();
 	
 	if (handler) {
-		console.log(handler);
 		handler.Execute(response);
 	} else {
 		throw 'no matcher found for ' + request.url;

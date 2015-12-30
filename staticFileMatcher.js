@@ -23,8 +23,6 @@ exports.StaticFileMatcher = function() {
 			.first();
 
 		if (matched) {
-			console.log('static file: ' + matched);
-
 			return new hh.MatchedResult(function(response) {
 				response.writeHead(200, {contentType: matched.contentType});
 				response.end(readFile(request.url));

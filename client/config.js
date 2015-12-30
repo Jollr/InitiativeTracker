@@ -25,20 +25,42 @@ var Config = function() {
 		return pairs.filter(function(kvp) {return kvp.Key == key;}).first();
 	};
 
-	this.IsAdmin = function() {
-		var option = getByKey(readCookie(), 'isAdmin');
-		return option && option.Value;
+	var getValueByKey = function(pairs, key) {
+		var kvp = getByKey(pairs, key);
+		if (kvp) {
+			return kvp.Value;
+		}
 	};
 
-	this.MakeAdmin = function() {
-		var current = readCookie();
-		var adminOption = getByKey(current, 'isAdmin');
-		if (adminOption) {
-			adminOption.Value = true;
+	var addOrSetValue = function(pairs, key, value) {
+		var option = getByKey(pairs, key);
+		if (option) {
+			option.Value = value;
 		} else {
-			current = current.push(new KeyValuePair('isAdmin', true));
+			current = current.push(new KeyValuePair(key, value));
 		}
 
 		parseCookie(current);
+	};
+
+	var removeOptionIfExists = function(pairs, key) {
+		parseCookie(pairs.filter(function(kvp) {return kvp.Key != key;}));
+	};
+
+	this.GetCharacterName = function() {
+		return getValueByKey(readCookie(), 'charName');
+	};
+
+	this.PickCharacterName = function(charName) {
+		addOrSetValue(readCookie(), 'charName', charName);
+	};
+
+	this.IsAdmin = function() {
+		return getValueByKey(readCookie(), 'isAdmin');
+	};
+
+	this.MakeAdmin = function() {
+		removeOptionIfExists('charName');
+		addOrSetValue(readCookie(), 'isAdmin', true);
 	};
 };
