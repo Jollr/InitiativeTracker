@@ -18,6 +18,10 @@ var InitiativeUpdater = function () {
 };
 
 $(function() { 
-	window.updater = new InitiativeUpdater();
-	updater.Start();
+	var config = new Config();
+	if (!config.IsAdmin()) {
+		$('#adminForms').hide();
+	}
+
+	new InitiativeUpdater().Start();
 });

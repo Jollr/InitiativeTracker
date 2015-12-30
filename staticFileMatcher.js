@@ -10,7 +10,8 @@ var types = immutable.List.of(
 );
 
 var readFile = function(fileName) {
-	var fullPath = __dirname + '\\' + fileName;
+	//var fullPath = __dirname + '\\client\\' + fileName;
+	var fullPath = '.\\client\\' + fileName;
 	console.log('Reading ' + fullPath);
 	return fs.readFileSync(fullPath);
 };

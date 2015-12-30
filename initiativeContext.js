@@ -13,16 +13,17 @@ var EventStore = function () {
 
 	this.GetOrder = function() {
 		if (!events.first()) {
-			return '<ul></ul>';
+			return '[]';
 		}
 
 		var state = new immutable.List();
 		events.forEach(function(event) {state = event.Apply(state);});
 		var result = state
-			.map(function(x) {return '<li>' + x.charName + ' - ' + x.roll + '</li>'; })
-			.reduce(function(x1, x2) {return x1 + x2;});
+			.map(function(x) {return '{ name: ' + x.charName + ', roll: ' + x.roll + '},'; })
+			.reduce(function(x1, x2) {return x1 + x2;})
+			.slice(0, -1);
 
-		return '<ul>' + result + '</ul>';
+		return '[' + result + ']';
 	};
 };
 
