@@ -40,7 +40,7 @@ exports.InitiativeRolledEvent = function(charName, roll) {
 
 exports.CombatStartedEvent = function() {
 	this.Apply = function(state) {
-		return state.sortBy(function (elem) { return elem.roll; }).reverse();
+		return state.sortBy(function (elem) { return Number.parseInt(elem.roll); }).reverse();
 	};
 };
 
