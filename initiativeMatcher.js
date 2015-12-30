@@ -23,8 +23,12 @@ var subMatchers = immutable.List.of(
 		method: 'POST', 
 		result: function(request, response) {
 			return function(response) {
-				var addedRoll = new initiativeContext.InitiativeRolledEvent(request.postData.characterName, request.postData.initiativeRoll);
-				initiativeContext.AddEvent(addedRoll);
+				
+				if (Number.parseInt(request.postData.initiativeRoll)) {
+					var addedRoll = new initiativeContext.InitiativeRolledEvent(request.postData.characterName, request.postData.initiativeRoll);
+					initiativeContext.AddEvent(addedRoll);
+				}
+				
 				postRedirectGet(response);
 			};
 		}
