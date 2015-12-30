@@ -56,7 +56,7 @@ var Config = function() {
 		return getValueByKey('charName');
 	};
 
-	this.PickCharacterName = function(charName) {
+	this.SetCharacterName = function(charName) {
 		addOrSetValue('charName', charName);
 	};
 

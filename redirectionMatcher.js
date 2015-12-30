@@ -3,7 +3,9 @@ var hh = require('./httpHelper.js');
 
 exports.RedirectMatcher = function() {
 	var aliases = immutable.List.of(
-		{from: '/', to: '/index.html'}
+		{from: '/', to: '/index.html'},
+		{from: '/add', to: '/add.html'},
+		{from: '/admin', to: '/admin.html'}
 	);
 
 	this.MatchRequest = function(request) {
@@ -12,8 +14,6 @@ exports.RedirectMatcher = function() {
 			.first();
 
 		if (matched) {
-			console.log('redirect: ' + matched);
-
 			return new hh.MatchedResult(function(response) {
 				hh.Redirect(response, matched.to);
 			});

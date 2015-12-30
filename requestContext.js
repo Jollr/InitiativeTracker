@@ -21,6 +21,7 @@ exports.processRequest = function(request, response) {
 	if (handler) {
 		handler.Execute(response);
 	} else {
-		throw 'no matcher found for ' + request.url;
+		response.writeHead(404);
+		response.end('no matcher found for ' + request.url);
 	}
 };
