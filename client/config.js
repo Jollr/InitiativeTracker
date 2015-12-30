@@ -16,24 +16,29 @@ var Config = function() {
 	};
 
 	var parseCookie = function(options) {
-		document.cookie = options
-			.map(function(kvp) { return kvp.Key + '=' + kvp.Value; })
-			.reduce(function(x1, x2) {return x1 + '&' + x2});
+		if (options.first()) {
+			document.cookie = options
+				.map(function(kvp) { return kvp.Key + '=' + kvp.Value; })
+				.reduce(function(x1, x2) {return x1 + '&' + x2});
+		} else {
+			document.cookie = '';
+		}
 	};
 
 	var getByKey = function(pairs, key) {
 		return pairs.filter(function(kvp) {return kvp.Key == key;}).first();
 	};
 
-	var getValueByKey = function(pairs, key) {
-		var kvp = getByKey(pairs, key);
+	var getValueByKey = function(key) {
+		var kvp = getByKey(readCookie(), key);
 		if (kvp) {
 			return kvp.Value;
 		}
 	};
 
-	var addOrSetValue = function(pairs, key, value) {
-		var option = getByKey(pairs, key);
+	var addOrSetValue = function(key, value) {
+		var current = readCookie();
+		var option = getByKey(current, key);
 		if (option) {
 			option.Value = value;
 		} else {
@@ -43,24 +48,24 @@ var Config = function() {
 		parseCookie(current);
 	};
 
-	var removeOptionIfExists = function(pairs, key) {
-		parseCookie(pairs.filter(function(kvp) {return kvp.Key != key;}));
+	var removeOptionIfExists = function(key) {
+		parseCookie(readCookie().filter(function(kvp) {return kvp.Key != key;}));
 	};
 
 	this.GetCharacterName = function() {
-		return getValueByKey(readCookie(), 'charName');
+		return getValueByKey('charName');
 	};
 
 	this.PickCharacterName = function(charName) {
-		addOrSetValue(readCookie(), 'charName', charName);
+		addOrSetValue('charName', charName);
 	};
 
 	this.IsAdmin = function() {
-		return getValueByKey(readCookie(), 'isAdmin');
+		return getValueByKey('isAdmin');
 	};
 
 	this.MakeAdmin = function() {
 		removeOptionIfExists('charName');
-		addOrSetValue(readCookie(), 'isAdmin', true);
+		addOrSetValue('isAdmin', true);
 	};
 };
