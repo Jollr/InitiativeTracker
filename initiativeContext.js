@@ -80,8 +80,28 @@ exports.EndOfTurnEvent = function () {
 
 exports.CharacterRemovedFromCombatEvent = function (charName) {
 	this.Apply = function(state) {
-		return State.UpdateOrder(
+		return state.UpdateOrder(
 			state.Order.filter(function(elem) {return elem.charName != charName;})
+		);
+	};
+};
+
+exports.DelayStartedEvent = function (charName) {
+	this.Apply = function(state) {
+		var delayingChar = state.Order.filter(function(elem) {return elem.charName == charName;}).first();
+		return new State(
+			state.Order.filter(function(elem) {return elem.charName != charName;}),
+			state.Delayed.push(delayingChar)
+		);
+	};
+};
+
+exports.DelayStoppedEvent = function (charName) {
+	this.Apply = function(state) {
+		var reenteringChar = state.Delayed.filter(function(elem) {return elem.charName == charName;}).first();
+		return new State(
+			state.Order.unshift(reenteringChar),
+			state.Delayed.filter(function(elem) {return elem.charName != charName;})
 		);
 	};
 };

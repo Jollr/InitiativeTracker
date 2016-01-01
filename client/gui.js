@@ -10,19 +10,25 @@ var Gui = function(dispatcher) {
 			$('.adminForms').show();
 		}
 
-		if (!config.IsAdmin() && updateContext.myCharIsFirst) {
-			$('.playerForms').show();
+		if (!config.IsAdmin() && updateContext.myCharIsFirst && !updateContext.myCharIsDelaying) {
+			$('.startDelayForm').show();
 		} else {
-			$('.playerForms').hide();
+			$('.startDelayForm').hide();
 		}
 
-		if (!updateContext.myCharIsPresent || config.IsAdmin()) {
+		if ((!updateContext.myCharIsPresent && !updateContext.myCharIsDelaying) || config.IsAdmin()) {
 			$('#addRollForm').show();
 		} else {
 			$('#addRollForm').hide();
 		}
 
-		$('#charNameBox').val(config.GetCharacterName());
+		if (updateContext.myCharIsDelaying) {
+			$('.stopDelayForm').show();
+		} else {
+			$('.stopDelayForm').hide();
+		}
+
+		$('.charNameBox').val(updateContext.myCharName);
 	};
 	
 	var parseRow = function(row) {
@@ -43,14 +49,11 @@ var Gui = function(dispatcher) {
 
 		if (updateContext.isFirst) {
 			updateContext.isFirst = false;
-			className = 'label label-success';
 			updateContext.myCharIsFirst = updateContext.myCharName == initiativeRoll.name;
-		} 
+		}
 
 		if (updateContext.myCharName == initiativeRoll.name) {
-			if (!updateContext.isFirst) {
-				className = 'label label-primary';
-			}
+			className = 'label label-success';
 			updateContext.myCharIsPresent = true;
 		}
 
@@ -58,11 +61,7 @@ var Gui = function(dispatcher) {
 			if (!config.IsAdmin()) {
 				return '';
 			}
-			//<button type="button" class="btn btn-lg btn-danger">Danger</button>
 
-			/*<form method='POST' action='/initiative/startDelay'>
-				<input class="btn btn-danger" type='submit' value='Delay'/>
-			</form>*/
 			return "<form method='POST' action='/initiative/remove'>" +
 				"<input type='hidden' value='" + initiativeRoll.name + "' name='characterName' />" +
 				"<input class='btn btn-danger' type='submit' value='X'/>" +
@@ -73,6 +72,13 @@ var Gui = function(dispatcher) {
 			+ '<span class="' + className + '">' + initiativeRoll.name + ': ' + initiativeRoll.roll + '</span>'
 			+ genAdminButtons()
 			+ '</h2>';
+	};
+
+	var processDelayQueue = function(order, updateContext) {
+		updateContext.myCharIsDelaying = 
+			!config.IsAdmin() && 
+			updateContext.myCharName &&
+			order.filter(function(roll) {return roll.name == updateContext.myCharName;}).first();
 	};
 
 	var updateInitiative = function(updatedOrder) {
@@ -86,13 +92,19 @@ var Gui = function(dispatcher) {
 			isFirst: true, 
 			myCharName: config.GetCharacterName(),
 			myCharIsPresent : false,
-			myCharIsFirst: false
+			myCharIsFirst: false,
+			myCharIsDelaying: false
 		};
 
-		var order = updatedOrder.split('],')[0].replace('{order: [', '').split('},{');
-		//var delayed = updatedOrder.split('],')[1]...;
+		var order = Immutable.fromJS(updatedOrder.split('],')[0].replace('{order: [', '').split('},{'));
+		var delayed = Immutable.fromJS(updatedOrder.split('],')[1].replace('delayed: [', '').replace(']}', '').split('},{'))
+			.map(function(str) {return str.replace('{', '').replace('}', '')})
+			.map(parseRow);
+		if (delayed.first()) {
+			processDelayQueue(delayed, updateContext);
+		}
 
-		var updatedHtml = Immutable.fromJS(order)
+		var updatedHtml = order
 			.map(function(str) {return str.replace('{', '').replace('}', '')})
 			.map(parseRow)
 			.map(function(row) {return genHtml(row, updateContext);})
@@ -103,7 +115,7 @@ var Gui = function(dispatcher) {
 	};
 
 	$('#addRollForm').submit(function() {
-		var charName = $('#charNameBox').val();
+		var charName = $('#submittedCharName').val();
 		if (!config.IsAdmin()) {
 			config.SetCharacterName(charName);
 		}

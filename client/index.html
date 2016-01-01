@@ -23,7 +23,7 @@
 	<body>
 		<div class='panel panel-primary'>
 			<div class='panel-heading'>
-				<h2 class='panel-title'>Initiative order</h1>
+				<h2 class='panel-title'>Initiative order</h2>
 			</div>
 
 			<div class='panel-body'>
@@ -31,15 +31,22 @@
 				</div>
 
 				<form method='POST' action='/initiative/add' id='addRollForm'>
-					<input type='text' name='characterName' id='charNameBox'/>
+					<input type='text' name='characterName' id='submittedCharName' class='charNameBox'/>
 					<input type='text' name='initiativeRoll' style='width:40px'/>
 					<input type='submit' class='btn btn-sm btn-success' value='+'/>
 				</form>
 
-				<div class='playerForms delayButton'>
-					<form method='POST' action='/initiative/delay'>
-						<input type='hidden' name='characterName' id='charNameBox'/>
+				<div class='startDelayForm'>
+					<form method='POST' action='/initiative/delay/start'>
+						<input type='hidden' name='characterName' class='charNameBox'/>
 						<input type='submit' value='Delay' class='btn btn-default'/>
+					</form>
+				</div>
+
+				<div class='stopDelayForm'>
+					<form method='POST' action='/initiative/delay/stop'>
+						<input type='hidden' name='characterName' class='charNameBox'/>
+						<input type='submit' value='Stop delay' class='btn btn-default'/>
 					</form>
 				</div>
 			</div>

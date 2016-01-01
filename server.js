@@ -26,6 +26,7 @@ var parseAndProcess = function(request, response) {
 			});
 
 			request.on('end', function() {
+				console.log('Gathered post data: ' + gatheredData);
 				request.postData = parsePostData(gatheredData);
 				rq.processRequest(request, response);
 			});

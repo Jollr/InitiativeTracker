@@ -82,9 +82,27 @@ var subMatchers = immutable.List.of(
 				postRedirectGet(response);
 			}
 		}
+	},
+	{
+		url: 'delay/start',
+		method: 'POST',
+		result: function (request, response) {
+			return function(response) {
+				initiativeContext.AddEvent(new initiativeContext.DelayStartedEvent(request.postData.characterName));
+				postRedirectGet(response);
+			}
+		}
+	},
+	{
+		url: 'delay/stop',
+		method: 'POST',
+		result: function (request, response) {
+			return function(response) {
+				initiativeContext.AddEvent(new initiativeContext.DelayStoppedEvent(request.postData.characterName));
+				postRedirectGet(response);
+			}
+		}
 	}
-
-	
 );
 
 exports.InitiativeMatcher = function () {
