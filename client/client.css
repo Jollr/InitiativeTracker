@@ -1,0 +1,9 @@
+.initiativeRoll span {
+	display: inline-block;
+	margin-right: 5px;
+}
+
+.initiativeRoll form {
+	margin-top: 1px;
+	display: inline-block;
+}

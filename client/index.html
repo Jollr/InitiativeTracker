@@ -12,6 +12,7 @@
 		<script type='text/javascript' src='config.js'></script>
 		<script type='text/javascript' src='gui.js'></script>
 		<script type='text/javascript' src='client.js'></script>
+		<link href="client.css" rel="stylesheet">
 
 		<!-- Bootstrap -->
 		<script src="bootstrap/js/bootstrap.min.js"></script>
@@ -24,7 +25,7 @@
 		<div id='initiativeOrder'>
 		</div>
 
-		<div id='adminForms'>
+		<div class='adminForms adminButtonSet'>
 			<form method='POST' action='/initiative/startCombat'>
 				<input type='submit' value='start combat'/>
 			</form>
@@ -44,7 +45,7 @@
 
 		<form method='POST' action='/initiative/add' id='addRollForm'>
 			<input type='text' name='characterName' id='charNameBox'/>
-			<input type='text' name='initiativeRoll'/>
+			<input type='text' name='initiativeRoll' style='width:40px'/>
 			<input type='submit' value='add'/>
 		</form>
 	</body>

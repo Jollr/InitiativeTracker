@@ -57,6 +57,12 @@ exports.EndOfTurnEvent = function () {
 	};
 };
 
+exports.CharacterRemovedFromCombatEvent = function (charName) {
+	this.Apply = function(state) {
+		return state.filter(function(elem) {return elem.charName != charName;})
+	};
+};
+
 exports.Order = function() {
 	return eventStore.GetOrder();
 };

@@ -4,9 +4,9 @@ var Gui = function(dispatcher) {
 
 	var showCorrectElements = function (updateContext) {
 		if (!config.IsAdmin()) {
-			$('#adminForms').hide();
+			$('.adminForms').hide();
 		} else {
-			$('#adminForms').show();
+			$('.adminForms').show();
 		}
 
 		if (updateContext.myCharIsPresent) {
@@ -41,9 +41,25 @@ var Gui = function(dispatcher) {
 			updateContext.myCharIsPresent = true;
 		}
 
+		var genAdminButtons = function() {
+			if (!config.IsAdmin()) {
+				return '';
+			}
+			//<button type="button" class="btn btn-lg btn-danger">Danger</button>
+
+			/*<form method='POST' action='/initiative/startDelay'>
+				<input class="btn btn-danger" type='submit' value='Delay'/>
+			</form>*/
+			return "<form method='POST' action='/initiative/remove'>" +
+				"<input type='hidden' value='" + initiativeRoll.name + "' name='characterName' />" +
+				"<input class='btn btn-danger' type='submit' value='X'/>" +
+			"</form>";
+		};
+
 		return '<li>' 
-			+ '<h2>'
-			+ '<span class="' + className + '"">' + initiativeRoll.name + ': ' + initiativeRoll.roll + '</span>'
+			+ '<h2 class="initiativeRoll">'
+			+ '<span class="' + className + '">' + initiativeRoll.name + ': ' + initiativeRoll.roll + '</span>'
+			+ genAdminButtons()
 			+ '</h2>'
 			+ '</li>';
 	};
