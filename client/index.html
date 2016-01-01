@@ -21,32 +21,48 @@
 	    <title>Initiative</title>
 	</head>
 	<body>
-		<h1>Initiative order</h1>
-		<div id='initiativeOrder'>
+		<div class='panel panel-primary'>
+			<div class='panel-heading'>
+				<h2 class='panel-title'>Initiative order</h1>
+			</div>
+
+			<div class='panel-body'>
+				<div id='initiativeOrder'>
+				</div>
+
+				<form method='POST' action='/initiative/add' id='addRollForm'>
+					<input type='text' name='characterName' id='charNameBox'/>
+					<input type='text' name='initiativeRoll' style='width:40px'/>
+					<input type='submit' class='btn btn-sm btn-success' value='+'/>
+				</form>
+
+				<div class='playerForms delayButton'>
+					<form method='POST' action='/initiative/delay'>
+						<input type='hidden' name='characterName' id='charNameBox'/>
+						<input type='submit' value='Delay' class='btn btn-default'/>
+					</form>
+				</div>
+			</div>
 		</div>
 
-		<div class='adminForms adminButtonSet'>
-			<form method='POST' action='/initiative/startCombat'>
-				<input type='submit' value='start combat'/>
-			</form>
+		<div>
+			<div class='adminForms adminButtonSet'>
+				<form method='POST' action='/initiative/startCombat'>
+					<input type='submit' value='start combat' class='btn btn-default'/>
+				</form>
 
-			<form method='POST' action='/initiative/endCombat'>
-				<input type='submit' value='end combat'/>
-			</form>
+				<form method='POST' action='/initiative/endCombat'>
+					<input type='submit' value='end combat' class='btn btn-default'/>
+				</form>
 
-			<form method='POST' action='/initiative/undo'>
-				<input type='submit' value='undo'/>
-			</form>
+				<form method='POST' action='/initiative/undo'>
+					<input type='submit' value='undo' class='btn btn-default'/>
+				</form>
 
-			<form method='POST' action='/initiative/next'>
-				<input type='submit' value='next'/>
-			</form>
+				<form method='POST' action='/initiative/next'>
+					<input type='submit' value='next' class='btn btn-default'/>
+				</form>
+			</div>
 		</div>
-
-		<form method='POST' action='/initiative/add' id='addRollForm'>
-			<input type='text' name='characterName' id='charNameBox'/>
-			<input type='text' name='initiativeRoll' style='width:40px'/>
-			<input type='submit' value='add'/>
-		</form>
 	</body>
 </html>

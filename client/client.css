@@ -4,6 +4,13 @@
 }
 
 .initiativeRoll form {
-	margin-top: 1px;
 	display: inline-block;
+}
+
+#addRollForm {
+	margin-top: 25px;
+}
+
+.delayButton {
+	margin-top: 25px;
 }

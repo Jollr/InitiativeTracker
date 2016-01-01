@@ -10,7 +10,6 @@ var types = immutable.List.of(
 );
 
 var readFile = function(fileName) {
-	//var fullPath = __dirname + '\\client\\' + fileName;
 	var fullPath = '.\\client\\' + fileName;
 	console.log('Reading ' + fullPath);
 	return fs.readFileSync(fullPath);
@@ -24,7 +23,7 @@ exports.StaticFileMatcher = function() {
 
 		if (matched) {
 			return new hh.MatchedResult(function(response) {
-				response.writeHead(200, {contentType: matched.contentType});
+				response.writeHead(200, {'Content-Type': matched.contentType});
 				response.end(readFile(request.url));
 			});
 		} else {

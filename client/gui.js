@@ -5,16 +5,24 @@ var Gui = function(dispatcher) {
 	var showCorrectElements = function (updateContext) {
 		if (!config.IsAdmin()) {
 			$('.adminForms').hide();
+			
 		} else {
 			$('.adminForms').show();
 		}
 
-		if (updateContext.myCharIsPresent) {
-			$('#addRollForm').hide();
-		} else if (config.GetCharacterName()) {
-			$('#addRollForm').show();
-			$('#charNameBox').val(config.GetCharacterName());
+		if (!config.IsAdmin() && updateContext.myCharIsFirst) {
+			$('.playerForms').show();
+		} else {
+			$('.playerForms').hide();
 		}
+
+		if (!updateContext.myCharIsPresent || config.IsAdmin()) {
+			$('#addRollForm').show();
+		} else {
+			$('#addRollForm').hide();
+		}
+
+		$('#charNameBox').val(config.GetCharacterName());
 	};
 	
 	var parseRow = function(row) {
@@ -36,8 +44,13 @@ var Gui = function(dispatcher) {
 		if (updateContext.isFirst) {
 			updateContext.isFirst = false;
 			className = 'label label-success';
-		} else if (updateContext.myCharName == initiativeRoll.name) {
-			className = 'label label-primary';
+			updateContext.myCharIsFirst = updateContext.myCharName == initiativeRoll.name;
+		} 
+
+		if (updateContext.myCharName == initiativeRoll.name) {
+			if (!updateContext.isFirst) {
+				className = 'label label-primary';
+			}
 			updateContext.myCharIsPresent = true;
 		}
 
@@ -56,12 +69,10 @@ var Gui = function(dispatcher) {
 			"</form>";
 		};
 
-		return '<li>' 
-			+ '<h2 class="initiativeRoll">'
+		return '<h2 class="initiativeRoll">'
 			+ '<span class="' + className + '">' + initiativeRoll.name + ': ' + initiativeRoll.roll + '</span>'
 			+ genAdminButtons()
-			+ '</h2>'
-			+ '</li>';
+			+ '</h2>';
 	};
 
 	var updateInitiative = function(updatedOrder) {
@@ -74,20 +85,20 @@ var Gui = function(dispatcher) {
 		var updateContext = { 
 			isFirst: true, 
 			myCharName: config.GetCharacterName(),
-			myCharIsPresent : false
+			myCharIsPresent : false,
+			myCharIsFirst: false
 		};
 
-		var updatedHtml = Immutable.fromJS(
-			updatedOrder
-				.replace('[', '')
-				.replace(']', '')
-				.split('},{'))
+		var order = updatedOrder.split('],')[0].replace('{order: [', '').split('},{');
+		//var delayed = updatedOrder.split('],')[1]...;
+
+		var updatedHtml = Immutable.fromJS(order)
 			.map(function(str) {return str.replace('{', '').replace('}', '')})
 			.map(parseRow)
 			.map(function(row) {return genHtml(row, updateContext);})
 			.reduce(function(row1, row2) {return row1 + row2;});
 			
-		$('#initiativeOrder').html('<ul>' + updatedHtml + '</ul>');
+		$('#initiativeOrder').html(updatedHtml);
 		showCorrectElements(updateContext);
 	};
 
