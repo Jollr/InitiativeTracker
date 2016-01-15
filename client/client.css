@@ -1,20 +1,27 @@
 .initiativeRoll span {
 	display: inline-block;
-	margin-right: 5px;
+	width: 70%;
 }
 
 .initiativeRoll form {
 	display: inline-block;
 }
 
+.delayForm {
+	margin-left: 5px;
+	margin-top: 5px;
+}
+
+.adminForms form {
+	display: inline-block;
+	margin-left: 5px;
+}
+
+.adminCharButton {
+	margin-left: 5px;
+	float:right;
+}
+
 #addRollForm {
-	margin-top: 25px;
-}
-
-.startDelayForm {
-	margin-top: 25px;
-}
-
-.stopDelayForm {
 	margin-top: 25px;
 }

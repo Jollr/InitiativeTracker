@@ -60,7 +60,7 @@ var subMatchers = immutable.List.of(
 			return function(response) {
 				initiativeContext.Undo();
 				postRedirectGet(response);
-			}
+			};
 		}
 	},
 	{
@@ -70,7 +70,7 @@ var subMatchers = immutable.List.of(
 			return function(response) {
 				initiativeContext.AddEvent(new initiativeContext.EndOfTurnEvent());
 				postRedirectGet(response);
-			}
+			};
 		}
 	},
 	{
@@ -80,7 +80,7 @@ var subMatchers = immutable.List.of(
 			return function(response) {
 				initiativeContext.AddEvent(new initiativeContext.CharacterRemovedFromCombatEvent(request.postData.characterName));
 				postRedirectGet(response);
-			}
+			};
 		}
 	},
 	{
@@ -90,7 +90,7 @@ var subMatchers = immutable.List.of(
 			return function(response) {
 				initiativeContext.AddEvent(new initiativeContext.DelayStartedEvent(request.postData.characterName));
 				postRedirectGet(response);
-			}
+			};
 		}
 	},
 	{
@@ -100,7 +100,17 @@ var subMatchers = immutable.List.of(
 			return function(response) {
 				initiativeContext.AddEvent(new initiativeContext.DelayStoppedEvent(request.postData.characterName));
 				postRedirectGet(response);
-			}
+			};
+		}
+	},
+	{
+		url: 'triggerReadyAction',
+		method: 'POST',
+		result: function(request, response) {
+			return function(response) {
+				initiativeContext.AddEvent(new initiativeContext.ReadiedActionTriggeredEvent(request.postData.characterName));
+				postRedirectGet(response);
+			};
 		}
 	}
 );

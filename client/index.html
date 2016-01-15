@@ -35,25 +35,29 @@
 					<input type='text' name='initiativeRoll' style='width:40px'/>
 					<input type='submit' class='btn btn-sm btn-success' value='+'/>
 				</form>
-
-				<div class='startDelayForm'>
-					<form method='POST' action='/initiative/delay/start'>
-						<input type='hidden' name='characterName' class='charNameBox'/>
-						<input type='submit' value='Delay' class='btn btn-default'/>
-					</form>
-				</div>
-
-				<div class='stopDelayForm'>
-					<form method='POST' action='/initiative/delay/stop'>
-						<input type='hidden' name='characterName' class='charNameBox'/>
-						<input type='submit' value='Stop delay' class='btn btn-default'/>
-					</form>
-				</div>
 			</div>
+		</div>
+
+		<div class='startDelayForm delayForm'>
+			<form method='POST' action='/initiative/delay/start'>
+				<input type='hidden' name='characterName' class='charNameBox'/>
+				<input type='submit' value='Delay' class='btn btn-default'/>
+			</form>
+		</div>
+
+		<div class='stopDelayForm delayForm'>
+			<form method='POST' action='/initiative/delay/stop'>
+				<input type='hidden' name='characterName' class='charNameBox'/>
+				<input type='submit' value='Stop delay' class='btn btn-default'/>
+			</form>
 		</div>
 
 		<div>
 			<div class='adminForms adminButtonSet'>
+				<form method='POST' action='/initiative/next'>
+					<input type='submit' value='next' class='btn btn-default'/>
+				</form>
+
 				<form method='POST' action='/initiative/startCombat'>
 					<input type='submit' value='start combat' class='btn btn-default'/>
 				</form>
@@ -64,10 +68,6 @@
 
 				<form method='POST' action='/initiative/undo'>
 					<input type='submit' value='undo' class='btn btn-default'/>
-				</form>
-
-				<form method='POST' action='/initiative/next'>
-					<input type='submit' value='next' class='btn btn-default'/>
 				</form>
 			</div>
 		</div>

@@ -62,14 +62,21 @@ var Gui = function(dispatcher) {
 				return '';
 			}
 
-			return "<form method='POST' action='/initiative/remove'>" +
-				"<input type='hidden' value='" + initiativeRoll.name + "' name='characterName' />" +
-				"<input class='btn btn-danger' type='submit' value='X'/>" +
-			"</form>";
+			var removeForm = "<form method='POST' action='/initiative/remove' class='adminCharButton'>" +
+					"<input type='hidden' value='" + initiativeRoll.name + "' name='characterName' />" +
+					"<input class='btn btn-danger' type='submit' value='X'/>" +
+				"</form>";
+
+			var toTopForm = "<form method='POST' action='/initiative/triggerReadyAction' class='adminCharButton'>" +
+					"<input type='hidden' value='" + initiativeRoll.name + "' name='characterName' />" +
+					"<input class='btn btn-primary' type='submit' value='&uarr;' />" +
+				"</form>";
+
+			return removeForm + toTopForm;
 		};
 
 		return '<h2 class="initiativeRoll">'
-			+ '<span class="' + className + '">' + initiativeRoll.name + ': ' + initiativeRoll.roll + '</span>'
+			+ '<span class="' + className + '">' + initiativeRoll.name + ' (' + initiativeRoll.roll + ')' + '</span>'
 			+ genAdminButtons()
 			+ '</h2>';
 	};

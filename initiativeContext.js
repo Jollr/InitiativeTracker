@@ -106,6 +106,14 @@ exports.DelayStoppedEvent = function (charName) {
 	};
 };
 
+exports.ReadiedActionTriggeredEvent = function(charName) {
+	this.Apply = function(state) {
+		var concernedChar = state.Order.filter(function(elem) {return elem.charName == charName;}).first();
+		var newOrder = state.Order.filter(function(elem) {return elem.charName != charName;}).unshift(concernedChar);
+		return state.UpdateOrder(newOrder);
+	};
+};
+
 exports.Order = function() {
 	return eventStore.GetOrder();
 };
